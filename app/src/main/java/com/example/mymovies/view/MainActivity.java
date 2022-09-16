@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -22,6 +23,8 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private RecyclerView recyclerView;
     private MovieListAdapter adapter;
+    private MovieListAdapter.AdapterClickListener listener;
+    private List<Results> list;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,13 +37,26 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(List<Results> results) {
                 adapter.setItems(results);
+                list=results;
             }
         });
     }
     public void getAdapter(){
+        setOnClick();
         recyclerView=binding.movierecycle;
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter=new MovieListAdapter();
+        adapter=new MovieListAdapter(listener);
         recyclerView.setAdapter(adapter);
+    }
+    public void setOnClick(){
+listener=new MovieListAdapter.AdapterClickListener() {
+    @Override
+    public void onClick(View v, int position) {
+        Results results=list.get(position);
+        Intent intent=new Intent(MainActivity.this,MovieDetails.class);
+        intent.putExtra("id",results.getId());
+        startActivity(intent);
+    }
+};
     }
 }

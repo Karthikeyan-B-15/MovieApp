@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.mymovies.model.DetailModel;
 import com.example.mymovies.model.MovieModel;
 import com.example.mymovies.model.Results;
 import com.example.mymovies.network.ApiRequest;
@@ -42,5 +43,24 @@ public class MovieRepository {
             }
         });
        return data;
+    }
+    public void detailApiCall(String id,MutableLiveData<DetailModel> liveData){
+        apiRequest.getDetail(id).enqueue(new Callback<DetailModel>() {
+            @Override
+            public void onResponse(Call<DetailModel> call, Response<DetailModel> response) {
+                Log.d("res",response.body().getBudget());
+                if(response.body()!=null){
+                    liveData.postValue(response.body());
+                }
+                else {
+                    liveData.postValue(null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DetailModel> call, Throwable t) {
+
+            }
+        });
     }
 }
